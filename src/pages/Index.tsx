@@ -1,11 +1,35 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplet, Bot } from "lucide-react";
+import { Droplet, Bot, LogOut } from "lucide-react";
 import { BloodBank } from "@/components/BloodBank";
 import { AIChatbot } from "@/components/AIChatbot";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<"blood" | "ai">("blood");
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      navigate("/auth");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to log out.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blackish via-deep-navy to-dark-purple relative overflow-hidden">
@@ -29,9 +53,20 @@ const Index = () => {
               </div>
               <h1 className="text-2xl font-bold text-foreground">LifeLink</h1>
             </div>
-            <div className="text-xs text-muted-foreground">
-              <p>Lead: Vasanth</p>
-              <p>Team: Dhyanesh, Hemanth, Viswas, Koushik</p>
+            <div className="flex items-center gap-4">
+              <div className="text-xs text-muted-foreground hidden sm:block">
+                <p>Lead: Vasanth</p>
+                <p>Team: Dhyanesh, Hemanth, Viswas, Koushik</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </motion.header>
