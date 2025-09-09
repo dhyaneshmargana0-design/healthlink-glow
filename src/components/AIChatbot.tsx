@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Upload, ShoppingCart, Bot, User, Image as ImageIcon } from "lucide-react";
+import { Send, Upload, ShoppingCart, Bot, User, Loader2 } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { NeonButton } from "@/components/ui/neon-button";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: number;
@@ -24,8 +26,10 @@ export const AIChatbot = () => {
   ]);
   const [inputText, setInputText] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,7 +39,7 @@ export const AIChatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputText.trim() || uploadedImage) {
       const newMessage: Message = {
         id: messages.length + 1,
@@ -47,29 +51,51 @@ export const AIChatbot = () => {
 
       setMessages([...messages, newMessage]);
       setInputText("");
+      
+      // Keep the image for the API call
+      const currentImage = uploadedImage;
       setUploadedImage(null);
+      setIsLoading(true);
 
-      // Simulate AI response
-      setTimeout(() => {
+      try {
+        // Call the Perplexity API through our edge function
+        const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
+          body: { 
+            message: inputText || "Please analyze this image and provide medical insights",
+            imageData: currentImage 
+          }
+        });
+
+        if (error) throw error;
+
         const aiResponse: Message = {
           id: messages.length + 2,
-          text: generateAIResponse(inputText),
+          text: data.response || "I apologize, but I couldn't generate a response. Please try again.",
           sender: "ai",
           timestamp: new Date(),
         };
+        
         setMessages((prev) => [...prev, aiResponse]);
-      }, 1000);
+      } catch (error) {
+        console.error('Error calling AI:', error);
+        toast({
+          title: "Error",
+          description: "Failed to get AI response. Please try again.",
+          variant: "destructive",
+        });
+        
+        // Add error message to chat
+        const errorMessage: Message = {
+          id: messages.length + 2,
+          text: "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
+          sender: "ai",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  };
-
-  const generateAIResponse = (query: string): string => {
-    const responses = [
-      "Based on your symptoms, I recommend staying hydrated and getting plenty of rest. However, please consult a healthcare professional for accurate diagnosis.",
-      "I've analyzed your query. It's important to maintain a balanced diet and regular exercise. Would you like me to suggest some healthy lifestyle tips?",
-      "Your health concern has been noted. For immediate medical attention, please contact your nearest healthcare facility or call emergency services.",
-      "I understand your concern. While I can provide general health information, it's crucial to consult with a qualified doctor for personalized medical advice.",
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,9 +219,10 @@ export const AIChatbot = () => {
           <Input
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            onKeyPress={(e) => e.key === "Enter" && !isLoading && handleSendMessage()}
             placeholder="Ask a health question..."
             className="flex-1 bg-background/50"
+            disabled={isLoading}
           />
           <input
             ref={fileInputRef}
@@ -214,9 +241,14 @@ export const AIChatbot = () => {
             variant="primary"
             size="sm"
             onClick={handleSendMessage}
+            disabled={isLoading}
             className="px-3"
           >
-            <Send className="w-4 h-4" />
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
           </NeonButton>
         </div>
         <NeonButton
