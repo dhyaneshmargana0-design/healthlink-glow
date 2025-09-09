@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Upload, ShoppingCart, Bot, User, Loader2 } from "lucide-react";
+import { Send, Upload, ShoppingCart, Bot, User, Loader2, Sparkles, MessageSquare, Image } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { NeonButton } from "@/components/ui/neon-button";
 import { Input } from "@/components/ui/input";
@@ -119,12 +119,16 @@ export const AIChatbot = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-6"
+        className="text-center mb-6 group"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-          AI Health Assistant
-        </h1>
-        <p className="text-muted-foreground">Ask me anything about your health</p>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Sparkles className="w-8 h-8 text-secondary animate-pulse" />
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-secondary transition-colors duration-300">
+            AI Health Assistant
+          </h1>
+          <Sparkles className="w-8 h-8 text-secondary animate-pulse" />
+        </div>
+        <p className="text-muted-foreground group-hover:text-foreground transition-colors">Ask me anything about your health</p>
       </motion.div>
 
       {/* Chat Messages */}
@@ -214,16 +218,19 @@ export const AIChatbot = () => {
       )}
 
       {/* Input Area */}
-      <GlassCard className="p-4">
+      <GlassCard className="p-4 hover:shadow-violet-glow transition-all duration-300">
         <div className="flex gap-2 mb-3">
-          <Input
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && !isLoading && handleSendMessage()}
-            placeholder="Ask a health question..."
-            className="flex-1 bg-background/50"
-            disabled={isLoading}
-          />
+          <div className="flex-1 relative group">
+            <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-muted-foreground group-hover:text-secondary transition-colors" />
+            <Input
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && !isLoading && handleSendMessage()}
+              placeholder="Ask a health question..."
+              className="pl-10 bg-background/50 hover:bg-background/70 transition-colors"
+              disabled={isLoading}
+            />
+          </div>
           <input
             ref={fileInputRef}
             type="file"
@@ -231,25 +238,32 @@ export const AIChatbot = () => {
             onChange={handleImageUpload}
             className="hidden"
           />
-          <button
+          <motion.button
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 rounded-lg bg-background/50 border border-border/50 hover:bg-background/70 transition-colors"
+            className="p-2 rounded-lg bg-background/50 border border-border/50 hover:bg-secondary/20 hover:border-secondary/30 transition-all group"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <Upload className="w-5 h-5 text-muted-foreground" />
-          </button>
-          <NeonButton
-            variant="primary"
-            size="sm"
-            onClick={handleSendMessage}
-            disabled={isLoading}
-            className="px-3"
+            <Image className="w-5 h-5 text-muted-foreground group-hover:text-secondary transition-colors" />
+          </motion.button>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </NeonButton>
+            <NeonButton
+              variant="primary"
+              size="sm"
+              onClick={handleSendMessage}
+              disabled={isLoading}
+              className="px-3"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </NeonButton>
+          </motion.div>
         </div>
         <NeonButton
           variant="secondary"

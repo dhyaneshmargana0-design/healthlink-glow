@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, Phone, Droplet, AlertCircle } from "lucide-react";
+import { Search, MapPin, Phone, Droplet, AlertCircle, Clock, Building2, Heart } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { NeonButton } from "@/components/ui/neon-button";
 import { Input } from "@/components/ui/input";
@@ -63,20 +63,28 @@ export const BloodBank = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="text-center mb-8 group"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          Blood Bank Services
-        </h1>
-        <NeonButton
-          variant="primary"
-          size="lg"
-          onClick={() => setShowRequest(true)}
-          className="gap-2"
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <Heart className="w-8 h-8 text-primary animate-pulse" />
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+            Blood Bank Services
+          </h1>
+        </div>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <Droplet className="w-5 h-5" />
-          Find Blood Now
-        </NeonButton>
+          <NeonButton
+            variant="primary"
+            size="lg"
+            onClick={() => setShowRequest(true)}
+            className="gap-2"
+          >
+            <Droplet className="w-5 h-5" />
+            Find Blood Now
+          </NeonButton>
+        </motion.div>
       </motion.div>
 
       {/* Search Section */}
@@ -84,19 +92,23 @@ export const BloodBank = () => {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1 }}
+        className="group"
       >
-        <GlassCard className="mb-6 p-6">
-          <h2 className="text-xl font-semibold mb-4 text-foreground">Search Blood Banks</h2>
+        <GlassCard className="mb-6 p-6 hover:bg-card/50 hover:shadow-neon transition-all duration-300 cursor-default">
+          <div className="flex items-center gap-2 mb-4">
+            <Search className="w-5 h-5 text-primary group-hover:rotate-12 transition-transform duration-300" />
+            <h2 className="text-xl font-semibold text-foreground">Search Blood Banks</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="blood-group">Blood Group</Label>
               <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                <SelectTrigger id="blood-group" className="bg-background/50">
+                <SelectTrigger id="blood-group" className="bg-background/50 hover:bg-background/70 transition-colors duration-300">
                   <SelectValue placeholder="Select blood group" />
                 </SelectTrigger>
                 <SelectContent>
                   {bloodGroups.map((group) => (
-                    <SelectItem key={group} value={group}>
+                    <SelectItem key={group} value={group} className="hover:bg-primary/10">
                       {group}
                     </SelectItem>
                   ))}
@@ -132,23 +144,29 @@ export const BloodBank = () => {
             initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 + index * 0.1 }}
+            className="group"
           >
-            <GlassCard variant="neon" className="p-4">
+            <GlassCard variant="neon" className="p-4 hover:scale-[1.02] hover:shadow-neon-glow-intense transition-all duration-300 cursor-pointer">
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="font-semibold text-lg text-foreground">{bank.name}</h3>
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-primary group-hover:rotate-6 transition-transform duration-300" />
+                    <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">{bank.name}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1 group-hover:text-foreground transition-colors">
                     <MapPin className="w-3 h-3" />
                     {bank.location} • {bank.distance}
                   </p>
                 </div>
-                <a
+                <motion.a
                   href={`tel:${bank.phone}`}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   className="flex items-center gap-1 text-primary hover:text-primary/80"
                 >
                   <Phone className="w-4 h-4" />
                   <span className="text-sm">Call</span>
-                </a>
+                </motion.a>
               </div>
               <div className="flex flex-wrap gap-2">
                 {Object.entries(bank.availability).map(([group, units]) => (
