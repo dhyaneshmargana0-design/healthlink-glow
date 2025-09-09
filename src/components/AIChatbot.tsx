@@ -58,8 +58,8 @@ export const AIChatbot = () => {
       setIsLoading(true);
 
       try {
-        // Call the Perplexity API through our edge function
-        const { data, error } = await supabase.functions.invoke('chat-with-perplexity', {
+        // Call the Gemini API through our edge function
+        const { data, error } = await supabase.functions.invoke('chat-with-gemini', {
           body: { 
             message: inputText || "Please analyze this image and provide medical insights",
             imageData: currentImage 
