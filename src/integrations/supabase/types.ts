@@ -14,6 +14,304 @@ export type Database = {
   }
   public: {
     Tables: {
+      blood_banks: {
+        Row: {
+          address: string
+          available_blood_groups: string[]
+          city: string
+          contact_phone: string
+          created_at: string
+          email: string | null
+          id: string
+          is_verified: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          operating_hours: string | null
+          pincode: string
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          available_blood_groups?: string[]
+          city: string
+          contact_phone: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          operating_hours?: string | null
+          pincode: string
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          available_blood_groups?: string[]
+          city?: string
+          contact_phone?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          operating_hours?: string | null
+          pincode?: string
+          state?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blood_donors: {
+        Row: {
+          blood_group: string
+          city: string | null
+          contact_preference: string | null
+          created_at: string
+          donation_count: number | null
+          id: string
+          is_available: boolean | null
+          last_donation_date: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          blood_group: string
+          city?: string | null
+          contact_preference?: string | null
+          created_at?: string
+          donation_count?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_donation_date?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          blood_group?: string
+          city?: string | null
+          contact_preference?: string | null
+          created_at?: string
+          donation_count?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_donation_date?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      blood_requests: {
+        Row: {
+          additional_notes: string | null
+          blood_group: string
+          contact_phone: string
+          created_at: string
+          fulfilled_at: string | null
+          fulfilled_by: string | null
+          hospital_address: string
+          hospital_name: string
+          id: string
+          patient_name: string
+          status: string
+          units_required: number
+          updated_at: string
+          urgency: string
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          blood_group: string
+          contact_phone: string
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          hospital_address: string
+          hospital_name: string
+          id?: string
+          patient_name: string
+          status?: string
+          units_required?: number
+          updated_at?: string
+          urgency: string
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          blood_group?: string
+          contact_phone?: string
+          created_at?: string
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
+          hospital_address?: string
+          hospital_name?: string
+          id?: string
+          patient_name?: string
+          status?: string
+          units_required?: number
+          updated_at?: string
+          urgency?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_conversations: {
+        Row: {
+          conversation_type: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_type?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_type?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          image_url: string | null
+          message_type: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          message_type: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          message_type?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_contacts: {
+        Row: {
+          contact_name: string
+          created_at: string
+          id: string
+          is_primary: boolean | null
+          phone_number: string
+          relationship: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_name: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          phone_number: string
+          relationship: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_name?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          phone_number?: string
+          relationship?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medicine_orders: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          id: string
+          medicine_name: string
+          order_url: string | null
+          prescription_required: boolean | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          medicine_name: string
+          order_url?: string | null
+          prescription_required?: boolean | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          medicine_name?: string
+          order_url?: string | null
+          prescription_required?: boolean | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicine_orders_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
