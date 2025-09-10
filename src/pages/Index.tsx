@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Droplet, Bot, LogOut, Heart, Activity, Users, Shield } from "lucide-react";
 import { BloodBank } from "@/components/BloodBank";
 import { AIChatbot } from "@/components/AIChatbot";
+import RequestForm from "@/components/RequestForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -99,6 +100,13 @@ const Index = () => {
             </div>
           </div>
         </motion.header>
+
+        {/* Blood Request Form */}
+        <div className="bg-muted/20 py-8 px-4">
+          <div className="max-w-7xl mx-auto">
+            <RequestForm />
+          </div>
+        </div>
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
